@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         AndroidNetworking.initialize(this, okHttpClient);
 
-//        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+//        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);//without custom constructor
 //        LiveData<ArrayList<News>> newsLiveData = viewModel.getNewsList();//java.lang.RuntimeException: Cannot create an instance of class com.aashdit.news.viewmodel.NewsViewModel
         viewModel = ViewModelProviders.of(this, new NewsVMFactory(this, new ArrayList<News>())).get(NewsViewModel.class);
         mRecyclerView = findViewById(R.id.rv_news);

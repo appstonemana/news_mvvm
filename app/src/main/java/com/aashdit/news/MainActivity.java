@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,9 @@ import com.aashdit.news.viewmodel.NewsViewModel;
 import com.androidnetworking.AndroidNetworking;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,15 +33,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AndroidNetworking.initialize(getApplicationContext());
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(1, TimeUnit.MINUTES)
+                .build();
+        AndroidNetworking.initialize(this, okHttpClient);
 
 //        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
-//        LiveData<ArrayList<News>> newsLiveData = viewModel.newsList;//java.lang.RuntimeException: Cannot create an instance of class com.aashdit.news.viewmodel.NewsViewModel
+//        LiveData<ArrayList<News>> newsLiveData = viewModel.getNewsList();//java.lang.RuntimeException: Cannot create an instance of class com.aashdit.news.viewmodel.NewsViewModel
         viewModel = ViewModelProviders.of(this, new NewsVMFactory(this, new ArrayList<News>())).get(NewsViewModel.class);
         mRecyclerView = findViewById(R.id.rv_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        viewModel.newsList.observe(this, new Observer<ArrayList<News>>() {
+        viewModel.getNewsList().observe(this, new Observer<ArrayList<News>>() {
             @Override
             public void onChanged(ArrayList<News> news) {
                 adapter = new NewsListAdapter(MainActivity.this, news);

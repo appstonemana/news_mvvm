@@ -19,6 +19,11 @@ public class NewsViewModel extends ViewModel {
 //    private  ArrayList<News> newsarticles = new ArrayList<>();
 //    private Context context;
 
+    public NewsViewModel() {
+//        this.newsList = new MutableLiveData<>();
+//        this.context = context;
+        repo = new Repository();
+    }
     public NewsViewModel(Context context) {
 //        this.newsList = new MutableLiveData<>();
 //        this.context = context;

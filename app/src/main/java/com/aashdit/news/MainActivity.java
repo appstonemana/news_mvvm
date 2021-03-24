@@ -40,9 +40,25 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         AndroidNetworking.initialize(this, okHttpClient);
 
-//        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);//without custom constructor
-//        LiveData<ArrayList<News>> newsLiveData = viewModel.getNewsList();//java.lang.RuntimeException: Cannot create an instance of class com.aashdit.news.viewmodel.NewsViewModel
-        viewModel = ViewModelProviders.of(this, new NewsVMFactory(this, new ArrayList<News>())).get(NewsViewModel.class);
+        /**
+         * If you want to use custom constructor you need to provide Factory method to ViewModelProviders
+         * otherwise runtime exception occure.
+         *
+         *  The ViewModelProviders.of() method internally creates default ViewModelProvider.Factory
+         *  implementation for creating our ViewModel with no argument. So when you add argument in
+         *  the constructor, the inner implementation of ViewModelProvider.Factory failed to initialize
+         *  your ViewModel because ViewModelProvider.Factory call the primary constructor for creating
+         *  the ViewModel’s instance.
+         *
+         *  If you add argument in constructor you have to create your own implementation of ViewModelProvider.Factory
+         *  to create your ViewModel instance.
+         *
+         *  https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
+         *
+         * */
+        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);//without custom constructor
+        LiveData<ArrayList<News>> newsLiveData = viewModel.getNewsList();//java.lang.RuntimeException: Cannot create an instance of class com.aashdit.news.viewmodel.NewsViewModel
+//        viewModel = ViewModelProviders.of(this, new NewsVMFactory(this, new ArrayList<News>())).get(NewsViewModel.class);
         mRecyclerView = findViewById(R.id.rv_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
